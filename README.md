@@ -4,6 +4,10 @@
 
 This repository contains code and resources for a deep learning project focused on MRI reconstruction. The project includes the training of a deep learning model using complex 12-coil adult MRI images and testing its domain adaptivity on newborn MRI images, including the evaluation of contrast inversion techniques.
 
+## Tutorials
+
+- [**Using the BART toolbox on an HPC cluster**](BART-in-container.md)
+
 ## Project Structure
 
 - `preprocessing/`: Contains scripts related to data preprocessing before training.
@@ -17,7 +21,7 @@ This repository contains code and resources for a deep learning project focused 
 
     a. **Adding phase and converting into 12 coil configuration**:
       - File(s): `preprocessing/adding_phase_and_coil.py`
-      - Description: Every magnitude-only image is randomly matched with a complex-valued MRI image from an external dataset. After image registration, the phase component is extracted from the complex image and incorporated into the magnitude image, thus transforming it into a complex image.
+      - Description: Every magnitude-only image is randomly mapped with a complex-valued MRI image from an external dataset. After image registration, the phase component is extracted from the complex image and incorporated into the magnitude image, thus transforming it into a complex image.
    
     b. **Generating 2D MRI slices**:
       - File(s): `preprocessing/slicer.py`
@@ -39,4 +43,14 @@ This repository contains code and resources for a deep learning project focused 
    - Directory: `hybrid-cascade-contrast-inverted/`
    - Description: The hybrid cascade model is trained on adult MR images that have undergone contrast inversion. It is then tested on newborn MR images.
 
+## CSV File Examples
 
+<p align="center">
+  <img src="images/file_mappings_eg.png"/>
+</p>
+<p align="center"><em>Example of the file mapping in Step 1.a.</em></p>
+
+<p align="center">
+  <img src="images/slice_ids_example.png"/>
+</p>
+<p align="center"><em>Example of the csv of 2D image slices</em></p>
