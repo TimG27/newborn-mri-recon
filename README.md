@@ -8,14 +8,30 @@ This repository contains code and resources for a deep learning project focused 
 
 - [**Using the BART toolbox on an HPC cluster**](BART-in-container.md)
 
-## Project Structure
+## Repository Structure
 
 - `preprocessing/`: Contains scripts related to data preprocessing before training.
 - `unet/`: Code for the UNet model tested in this project.
 - `hybrid-cascade/`: Code for the hybrid cascade model.
 - `hybrid-cascade-contrast-inverted/`: Extensions for the hybrid cascade model with contrast inversion.
 
-## Project Flow
+## Methodology
+
+### Data Processing Flow
+
+<p align="center">
+  <img src="images/data_preproc.png"/>
+</p>
+<p align="center"><em>Data Processing Flow</em></p>
+
+### Retrospective Undersampling
+
+<p align="center">
+  <img src="images/undersamp.png"/>
+</p>
+<p align="center"><em>Retrospective Undersampling</em></p>
+
+## Usage
 
 1. **Data Preprocessing**: 
 
@@ -54,3 +70,19 @@ This repository contains code and resources for a deep learning project focused 
   <img src="images/slice_ids_example.png"/>
 </p>
 <p align="center"><em>Example of the csv of 2D image slices</em></p>
+
+## Results
+
+### Adult Dataset
+<p align="center">
+  <img src="images/recon-adult.png"/>
+</p>
+<p align="center"><em>Results - Adult Dataset </em></p>
+
+### Newborn Dataset
+
+<p align="center">
+  <img src="images/recon-newb.png"/>
+</p>
+<p align="center"><em>Results - Newborn Dataset</em></p>
+
