@@ -1,4 +1,4 @@
-# MRI Reconstruction with Deep Learning
+# Newborn MRI Reconstruction: Translating Adult-Trained Models
 
 ## Overview
 
