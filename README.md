@@ -6,14 +6,14 @@ This repository contains code and resources for a deep learning project focused 
 
 ## Table of Contents
 
-- [Tutorials](#tutorials)
+- [Prerequisites](#prerequisites)
 - [Repository Structure](#repository-structure)
 - [Methodology](#methodology)
 - [Usage](#usage)
 - [CSV File Examples](#csv-file-examples)
 - [Results](#results)
 
-## Tutorials
+## Prerequisites
 
 - [**Using the BART toolbox on an HPC cluster**](BART-in-container.md)
 
