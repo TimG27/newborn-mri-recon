@@ -2,7 +2,16 @@
 
 ## Overview
 
-This repository contains code and resources for a deep learning project focused on MRI reconstruction. The project includes the training of a deep learning model using complex 12-coil adult MRI images and testing its domain adaptivity on newborn MRI images, including the evaluation of contrast inversion techniques.
+This repository contains code and resources for a deep learning project focused on MRI reconstruction. The project includes the training of a deep learning model using complex 12-coil adult MRI images and testing its domain adaptivity on newborn MRI images, including the evaluation of contrast inversion techniques. Notably, the Hybrid Cascade model outperformed the baseline UNet model. Additionally, the implementation of the contrast inversion procedure resulted in an increase of SSIM scores for specific images; however, the extent of this enhancement varied across the dataset.
+
+## Table of Contents
+
+- [Tutorials](#tutorials)
+- [Repository Structure](#repository-structure)
+- [Methodology](#methodology)
+- [Usage](#usage)
+- [CSV File Examples](#csv-file-examples)
+- [Results](#results)
 
 ## Tutorials
 
@@ -81,8 +90,14 @@ This repository contains code and resources for a deep learning project focused 
 
 ### Newborn Dataset
 
+A more detailed comparison of contrast inversion results is presented [here](https://uofc-my.sharepoint.com/:b:/g/personal/timothy_george_ucalgary_ca/ESLcAUHYQUJDq9hTAYg_CCkBpnZhCGc8sA3LWaExlFD9-A?e=N3JrY1).
+
 <p align="center">
   <img src="images/recon-newb.png"/>
 </p>
 <p align="center"><em>Results - Newborn Dataset</em></p>
 
+## Acknowledgements
+
+- The [Advanced Imaging and Artificial Intelligence Lab](https://www.ai2lab.ca/) at the University of Calgary.
+- The [Vascular Imaging Lab](https://cumming.ucalgary.ca/labs/vascular-imaging/vascular-imaging) at the University of Calgary.
