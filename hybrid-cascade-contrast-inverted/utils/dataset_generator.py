@@ -46,7 +46,6 @@ class SliceSmapDataset(Dataset):
             # This is basically a csv with espirit_path, split, nlinv path
         self.smaps = smaps
 
-        # self.file_paths = random.sample(self.file_paths, 50)
         self.us_masks = us_masks
         self.data_transforms = data_transforms
         self.target_transforms = target_transforms
@@ -61,34 +60,21 @@ class SliceSmapDataset(Dataset):
 
     def __getitem__(self, idx):
 
-        # print ('file and idx len', len(self.file_paths), idx)
         img_path = self.file_paths[idx]  # recall this is the nicely done reconstruction
         smap_path = random.choice(self.smaps)
         us_mask_path = random.choice(self.us_masks)
 
-        # matter_path = self.matter_paths[idx]
-
         target_img = np.load(img_path)  # has size 1, 218, 170. 1 channel image, dims 218 x 170.
-        # print ('target_img',target_img.shape)
-        # if target_img.shape[-1] != 170:
-        #     diff = int((target_img.shape[-1] - 170) / 2)  # difference per side
-        #     target_img = target_img[:, :, diff:-diff]
 
         smap = np.load(smap_path)  # size channels, h, w
 
         # JUST FOR THE NEW CIRCLE SMAPS
-        # print ('smaploaded', smap.shape)
         smap = smap[:, :, 0]
         smap = np.expand_dims(smap, axis=0)
-        # print ('smapcut',smap.shape)
-        # smap = np.moveaxis(smap, -1, 0)
-        # print('smapmoved', smap.shape)
         mask = np.load(us_mask_path)
-        # print ('maskloaded', mask.shape)
         mask = np.repeat(mask[None, :, :], self.coils, axis=0)
-        # print ('maskrep', mask.shape)
 
-        # Performing Contrast Inversion ..
+        # PERFORMING CONTRAST INVERSION
         if self.invert != 'no':
             matter_path = self.matter_paths[idx]
             matter = np.load(matter_path)
@@ -101,15 +87,12 @@ class SliceSmapDataset(Dataset):
             mask = mask[:, :, 40:-40]
             target_img = target_img[:, 0:-56, :]
 
-        # input_kspace = np.fft.fftshift(np.fft.fft2(np.fft.ifftshift(target_img * smap, axes=(-1, -2))), axes=(-1,
-        # -2)) * mask
         input_kspace = np.fft.fftshift(np.fft.fft2(np.fft.ifftshift(target_img, axes=(-1, -2))), axes=(-1, -2)) * mask
         input_img = np.fft.fftshift(np.fft.ifft2(np.fft.ifftshift(input_kspace, axes=(-1, -2))),
                                     axes=(-1, -2))  # want shape channel h w
 
         input_img = np.moveaxis(input_img, 0,
-                                -1)  # In numpy, want channels at end. Torch tensor transform will move them to the
-        # front
+                                -1)  # In numpy, want channels at end. Torch tensor transform will move them to the front
 
         target_img = np.moveaxis(target_img, 0, -1)
         smap = np.moveaxis(smap, 0, -1)
