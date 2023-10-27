@@ -47,17 +47,12 @@ def random_add_phase(folder1_path, folder2_path, destination_path, trans_path):
 
         try:
             final_transform, image_a, image_b_magnitude, image_b_phase = register_image(image_A, image_B)
-            # print (type(final_transform))
 
             sitk.WriteTransform(final_transform, str(trans_path + file_folder1 + '.tfm'))
 
-            # final_transform = sitk.ReadTransform('/home/timothy/PycharmProjects/undsamp/data-samp/trans/' +
-            # file_folder1 + '.tfm')
-
             fixed_image, image_b_aligned, image_b_aligned_phase = resample_img(final_transform, image_a,
                                                                                image_b_magnitude, image_b_phase)
-            # np.save('/home/timothy/PycharmProjects/undsamp/data-samp/ref-reg/' + file_folder2, image_b_aligned)
-
+            
             complex_array = combine_to_complex(fixed_image, image_b_aligned_phase)
 
             np.save(destination_path + '/' + file_folder1 + '.npy', complex_array)
@@ -106,8 +101,6 @@ def register_image(fixed_image, moving_image):
     moving_image = image_b_magnitude
 
     # New: BSplice registration instead of Euler's 3D registration
-
-    # transformDomainMeshSize = [8] * moving_image.GetDimension()
     transformDomainMeshSize = [2] * moving_image.GetDimension()
     tx = sitk.BSplineTransformInitializer(fixed_image, transformDomainMeshSize)
 
@@ -118,7 +111,6 @@ def register_image(fixed_image, moving_image):
     R.SetOptimizerAsRegularStepGradientDescent(
         learningRate=1,
         minStep=1e-4,
-        # numberOfIterations=100,
         numberOfIterations=100,
     )
 
@@ -198,6 +190,6 @@ def combine_to_complex(magnitude_image, phase_image):
     vectorized_rect = np.vectorize(cmath.rect)
     complex_array = vectorized_rect(magnitudes, np.deg2rad(phases))
 
-    print('Complex array of dimensions ', complex_array.shape)
+    print('Complex array, of dimensions ', complex_array.shape)
 
     return complex_array
