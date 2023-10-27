@@ -20,8 +20,6 @@ from utils.training_utils import *
 
 dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
-# print('imports complete')
-
 project = 'inverted cascaded model'
 run_name = 'inversion corr-try-100'
 
@@ -39,10 +37,8 @@ lr = 0.001
 stopper_patience = 10
 plateau_patience = 6
 clip = 50
-# optim_name = 'SGD'
 optim_name = 'Adam'
 weight_decay = 0.1
-smap_style = ''
 note = ""
 
 id = wandb.util.generate_id()
@@ -66,9 +62,7 @@ config = {
     "early_stopper_patience": stopper_patience,
     "date/time": dt_string,
     "run_id": id,
-    "smap_style": smap_style,
 }
-# run_name = f"ic-cascaded=model"
 run = wandb.init(project=project, id=id, name=run_name, config=config, notes=note)  # resume is True when resuming
 
 # initiate some random seeds and check cuda
@@ -80,8 +74,6 @@ device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 print(device, flush=True)
 
 folder_path = '/home/timothy2/scratch/cascade-try/'
-
-# slice_ids = pd.read_csv('/home/timothy2/scratch/ci-try/slices-matter-ids.csv')
 slice_ids = pd.read_csv('slices-matter-ids.csv')
 test_transforms = transforms.Compose(
     [
@@ -99,8 +91,6 @@ train_data = SliceSmapDataset(slice_ids, 'train', smaps, masks, 'espirit', coils
 valid_data = SliceSmapDataset(slice_ids, 'valid', smaps, masks, 'espirit', coils, data_transforms=test_transforms,
                               target_transforms=test_transforms)
 
-# print('data', len(train_data) , len (valid_data))
-
 # create dataloaders
 train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True, drop_last=True)
 valid_loader = DataLoader(valid_data, batch_size=1, shuffle=True, drop_last=True)
@@ -116,17 +106,13 @@ model_save_path = f'model_weights/cinverted_cascaded_model_v{version}.pt'
 
 # define hyperparameters
 criterion_mse = nn.MSELoss()
-
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=plateau_patience)
 early_stopper = EarlyStopper(patience=stopper_patience)
 
-# model, optimizer, start_epoch, loss = load_checkpoint(model_save_path, model, optimizer)
 i = 0
 best_loss = 1e20
 
-# print('hi')
 ### TRAIN LOOP ###
 print(f'Started training model version {version}', flush=True)
 for epoch in range(epochs):
@@ -139,15 +125,10 @@ for epoch in range(epochs):
             data[5].to(device, dtype=torch.float32)
 
         optimizer.zero_grad()
+        
         output_imgs, output_smaps = model((inputs, input_kspaces, masks))
-        # output_imgs = model((inputs, input_kspaces, masks))
-
-        # print(output_imgs.shape, img_labels.shape, output_smaps.shape, smap_labels.shape)
-
         loss = criterion_mse(output_imgs, to_rms(img_labels)) + criterion_mse(to_rms(output_smaps),
                                                                               smap_labels)  # + loss_ssim
-        # print(loss)
-
         loss.backward()
 
         optimizer.step()
@@ -171,8 +152,6 @@ for epoch in range(epochs):
                 5].to(device, dtype=torch.float32)
 
             output_img, output_smap = model((input, input_kspace, mask))
-
-            # print (output_img.shape, img_label.shape)
 
             loss = criterion_mse(output_img, to_rms(img_label)) + criterion_mse(to_rms(output_smap),
                                                                                 smap_label)  # + loss_ssim
@@ -220,6 +199,5 @@ for epoch in range(epochs):
     if early_stopper.early_stop(val_loss):
         nepochs = epoch + 1
         break
-# run.log({"preds_table": table})
 
 print('Finished Training')
