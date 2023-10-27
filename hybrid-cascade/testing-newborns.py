@@ -7,7 +7,6 @@ import random
 from datetime import datetime
 import os
 
-# import numpy as np
 import pandas as pd
 import wandb
 from torch import nn
@@ -15,7 +14,6 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.transforms import ToTensor
 
-# from loss_functions import SSIMLoss
 from utils.cascaded_model_architecture import CascadedModel
 from utils.dataset_generator import SliceSmapDataset, ReImgChannels
 from utils.metrics import SSIM as SSIM_numpy
@@ -44,7 +42,6 @@ plateau_patience = 6
 clip = 50
 optim_name = 'Adam'
 weight_decay = 0.1
-smap_style = ''
 note = ""
 
 id = wandb.util.generate_id()
@@ -68,7 +65,6 @@ config = {
     "early_stopper_patience": stopper_patience,
     "date/time": dt_string,
     "run_id": id,
-    "smap_style": smap_style,
 }
 run = wandb.init(project=project, id=id, name=run_name, config=config, notes=note)  # resume is True when resuming
 
@@ -102,8 +98,6 @@ valid_data = SliceSmapDataset(slice_ids, 'valid', smaps, masks, 'espirit', coils
 # create dataloaders
 valid_loader = DataLoader(valid_data, batch_size=1, shuffle=True, drop_last=True)
 
-# print ('valid - ',len(valid_loader))
-
 # define model
 input_channels = coils * 2
 model = CascadedModel(input_channels, reps=blocks, block_depth=block_depth, filters=filters, smap_layers=smap_layers, smap_filters=smap_filters).type(torch.float32)
@@ -117,15 +111,10 @@ model.eval()
 
 # define hyperparameters
 criterion_mse = nn.MSELoss()
-
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=plateau_patience)
 early_stopper = EarlyStopper(patience=stopper_patience)
 
-# model, optimizer, start_epoch, loss = load_checkpoint(model_save_path, model, optimizer)
-
-# print('train-', len(train_loader), 'valid-', len(valid_loader))
 best_loss = 1e20
 
 val_loss = 0
