@@ -21,8 +21,6 @@ filters = 110
 smap_layers = 12
 smap_filters = 110
 
-# print('imports complete')
-
 # initiate some random seeds and check cuda
 np.random.seed(0)
 random.seed(0)
@@ -51,8 +49,6 @@ test_data = SliceSmapDataset(slice_ids, 'test', smaps, masks, 'espirit', coils=8
 # create dataloader
 test_loader = DataLoader(test_data, batch_size=1, shuffle=True, drop_last=True)
 
-# print('test = ', len(test_loader))
-
 # define model
 input_channels = 8 * 2
 model = CascadedModel(input_channels, reps=blocks, block_depth=block_depth, filters=filters,
@@ -62,7 +58,6 @@ model.to(device)
 model_save_path = f'model_weights/smap_branch_cascaded_model_v0.pt'
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.1)
-
 model, optimizer, start_epoch, loss = load_checkpoint(model_save_path, model, optimizer)
 
 # define hyperparameters
@@ -77,12 +72,7 @@ scale_values, input_kspaces, masks = data[3].to(dtype=torch.float32), data[4].to
     5].to(device, dtype=torch.float32)
 
 input_img = inputs
-
-# print(input_img.shape, img_labels.shape)
-
 output_imgs, output_smaps = model((inputs, input_kspaces, masks))
-
-# print(output_imgs.shape, img_labels.shape)
 
 np.save('random-pred.npy', output_imgs.cpu().detach().numpy())
 np.save('random-truth.npy', img_labels.cpu().detach().numpy())
