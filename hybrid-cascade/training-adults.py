@@ -5,24 +5,18 @@ This file contains the training loop that trains the cascade model on the image 
 import glob
 import random
 from datetime import datetime
-
-# import numpy as np
 import pandas as pd
 import wandb
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.transforms import ToTensor
-
-# from loss_functions import SSIMLoss
 from utils.cascaded_model_architecture import CascadedModel
 from utils.dataset_generator import SliceSmapDataset, ReImgChannels
 from utils.metrics import SSIM as SSIM_numpy
 from utils.training_utils import *
 
 dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-
-# print('imports complete')
 
 project = 'cascaded model'
 run_name = 'updated dataloader'
@@ -43,7 +37,6 @@ plateau_patience = 6
 clip = 50
 optim_name = 'Adam'
 weight_decay = 0.1
-smap_style = ''
 note = ""
 
 id = wandb.util.generate_id()
@@ -67,9 +60,7 @@ config = {
     "early_stopper_patience": stopper_patience,
     "date/time": dt_string,
     "run_id": id,
-    "smap_style": smap_style,
 }
-# run_name = f"smap-cascaded=model-till-65"
 run = wandb.init(project=project, id=id, name=run_name, config=config, notes=note)  # resume is True when resuming
 
 # initiate some random seeds and check cuda
@@ -81,9 +72,7 @@ device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 print(device, flush=True)
 
 folder_path = '/home/timothy2/scratch/cascade-try/'
-
 slice_ids = pd.read_csv(folder_path + 'slice_ids_v5.csv')
-# slice_ids = pd.read_csv ('/home/timothy/PycharmProjects/undsamp/folder-slice-view/smaller_version/slice_ids2.csv')
 test_transforms = transforms.Compose(
     [
         ToTensor(),
@@ -115,15 +104,10 @@ model_save_path = f'model_weights/smap_branch_cascaded_model_v{version}.pt'
 
 # define hyperparameters
 criterion_mse = nn.MSELoss()
-
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=plateau_patience)
 early_stopper = EarlyStopper(patience=stopper_patience)
 
-# model, optimizer, start_epoch, loss = load_checkpoint(model_save_path, model, optimizer)
-
-# print('train-', len(train_loader), 'valid-', len(valid_loader))
 best_loss = 1e20
 
 ### TRAIN LOOP ###
@@ -142,7 +126,6 @@ for epoch in range(epochs):
 
         loss = criterion_mse(output_imgs, to_rms(img_labels)) + criterion_mse(to_rms(output_smaps),
                                                                               smap_labels)  # + loss_ssim
-        # loss = criterion_l1(output_imgs, img_labels) + criterion_l1(output_smaps, smap_labels) + loss_ssim
         loss.backward()
 
         optimizer.step()
@@ -169,7 +152,6 @@ for epoch in range(epochs):
 
             loss = criterion_mse(output_img, to_rms(img_label)) + criterion_mse(to_rms(output_smap),
                                                                                 smap_label)  # + loss_ssim
-            # loss = criterion_l1(output_img, img_label) + criterion_l1(output_smap, smap_label) + loss_ssim
             val_loss += loss.item()
 
             if i in range(4):
