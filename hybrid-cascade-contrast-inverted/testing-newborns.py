@@ -7,7 +7,6 @@ import os
 import random
 from datetime import datetime
 
-# import numpy as np
 import pandas as pd
 import wandb
 from torch import nn
@@ -17,7 +16,6 @@ from torchvision.transforms import ToTensor
 
 from utils.cascaded_model_architecture import CascadedModel
 from utils.dataset_generator import SliceSmapDataset, ReImgChannels
-# from loss_functions import SSIMLoss
 from utils.metrics import SSIM as SSIM_numpy
 from utils.training_utils import *
 
@@ -97,12 +95,8 @@ masks = glob.glob(r'/home/timothy2/projects/def-rmsouza/timothy2/model-translati
 valid_data = SliceSmapDataset(slice_ids, 'valid', smaps, masks, 'espirit', coils, data_transforms=test_transforms,
                               target_transforms=test_transforms, invert='no')
 
-# print('data', len(train_data) , len (valid_data))
-
 # create dataloaders
 valid_loader = DataLoader(valid_data, batch_size=1, shuffle=True, drop_last=True)
-
-# print ('valid -', len(valid_loader))
 
 # define model
 input_channels = coils * 2
@@ -123,11 +117,8 @@ optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=plateau_patience)
 early_stopper = EarlyStopper(patience=stopper_patience)
 
-# model, optimizer, start_epoch, loss = load_checkpoint(model_save_path, model, optimizer)
 i = 0
 best_loss = 1e20
-
-# print('hi')
 
 val_loss = 0
 ### VALIDATION LOOP ###
