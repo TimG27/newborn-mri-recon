@@ -6,22 +6,18 @@ import glob
 import os
 import random
 from datetime import datetime
-
 import pandas as pd
 import wandb
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.transforms import ToTensor
-
 from utils.cascaded_model_architecture import CascadedModel
 from utils.dataset_generator import SliceSmapDataset, ReImgChannels
 from utils.metrics import SSIM as SSIM_numpy
 from utils.training_utils import *
 
 dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-
-print('imports complete')
 
 # WANDB PARAMETERS #
 project = 'inverted cascaded model'
