@@ -43,7 +43,6 @@ plateau_patience = 6
 clip = 50
 optim_name = 'Adam'
 weight_decay = 0.1
-smap_style = ''
 note = ""
 
 id = wandb.util.generate_id()
@@ -67,7 +66,6 @@ config = {
     "early_stopper_patience": stopper_patience,
     "date/time": dt_string,
     "run_id": id,
-    "smap_style": smap_style,
 }
 run = wandb.init(project=project, id=id, name=run_name, config=config, notes=note)
 
