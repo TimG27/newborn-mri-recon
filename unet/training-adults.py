@@ -5,23 +5,16 @@ This file contains the training loop that trains the cascade model on the image 
 import glob
 import random
 from datetime import datetime
-
-# import numpy as np
 import pandas as pd
 import wandb
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.transforms import ToTensor
-
-# from cascaded_map_branch import CascadedModel, to_complex
 from unet.utils.dataset_generator import SliceSmapDataset, ReImgChannels
-# from loss_functions import SSIMLoss
 from unet.utils.metrics import SSIM as SSIM_numpy
 from unet.utils.training_utils import *
 from unet.utils.unet_architecture import UNet
-
-# print('imports complete')
 
 dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
@@ -35,16 +28,12 @@ version = 2
 blocks = 4
 block_depth = 4
 filters = 2048
-# smap_layers = 12
-# smap_filters = 110
 batch_size = 4
 lr = 0.001
 stopper_patience = 10
 plateau_patience = 6
-# clip = 50
 optim_name = 'Adam'
 weight_decay = 0.1
-# smap_style = ''
 note = ""
 
 id = wandb.util.generate_id()
@@ -56,21 +45,15 @@ config = {
     "blocks": blocks,
     "block_depth": block_depth,
     "filters": filters,
-    # "smap_layers": smap_layers,
-    # "smap_filters": smap_filters,
     "batch_size": batch_size,
     "learning_rate": lr,
-    # "loss_function": loss_fn,
     "optimizer": optim_name,
     "weight_decay": weight_decay,
-    # "gradient_clipping": clip,
     "reduce_lr_patience": plateau_patience,
     "early_stopper_patience": stopper_patience,
     "date/time": dt_string,
     "run_id": id,
-    # "smap_style": smap_style,
 }
-# run_name = f"unet-model-till-35"
 run = wandb.init(project=project, id=id, name=run_name, config=config, notes=note)  # resume is True when resuming
 
 np.random.seed(0)
@@ -81,7 +64,6 @@ device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 print(device, flush=True)
 
 folder_path = '/home/timothy2/scratch/cascade-try/'
-
 slice_ids = pd.read_csv(folder_path + 'slice_ids_v5.csv')
 test_transforms = transforms.Compose(
     [
@@ -113,7 +95,6 @@ model_save_path = f'model_weights/unet_model_v{version}.pt'
 # define hyperparameters
 criterion_mse = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=6)
 early_stopper = EarlyStopper(patience=stopper_patience)
 best_loss = 1e20
@@ -124,7 +105,6 @@ for epoch in range(epochs):
     train_loss = 0.0
     for i, data in enumerate(train_loader, 0):
         input_img, img_labels = data[0].to(device, dtype=torch.float32), data[1].to(device, dtype=torch.float32)
-        # print (input_img.shape, img_labels.shape)
 
         optimizer.zero_grad()
 
